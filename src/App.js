@@ -2,7 +2,7 @@ import React from "react";
 import PokemonGallery from "./components/PokemonGallery";
 
 
-function app() {
+function App() {
     return(
         <div>
             <h1>Desafío Pokedéx</h1>

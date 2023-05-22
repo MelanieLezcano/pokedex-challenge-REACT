@@ -8,11 +8,23 @@ function PokemonGallery() {
     const pokemonList = useSelector(state => state.pokemonList)
 
     useEffect(() => {
-        console.log('%cSe montó el componente', 'color: pink');
+        console.log('%cSe montó el componente', 'color: red');
         fetch('https://pokeapi.co/api/v2/pokemon?limit=20')
             .then(response => response.json())
             .then(data => {
-                dispatch({ type: 'SET_POKEMON_LIST', payload: data.results });
+                const pokemonRequests = data.results.map(pokemon => fetch(pokemon.url).then(response => response.json()));
+                Promise.all(pokemonRequests)
+                    .then(pokemonData => {
+                        const pokemonListWithDetails = pokemonData.map(pokemon => ({
+                            id: pokemon.id,
+                            name: pokemon.name,
+                            weight: pokemon.weight,
+                            abilities: pokemon.abilities.map(ability => ability.ability.name),
+                            imageUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`,
+                        }));
+                        dispatch({ type: 'SET_POKEMON_LIST', payload: pokemonListWithDetails });
+                    })
+                    .catch(error => console.error(error));
             })
             .catch(error => console.error(error));
     }, [dispatch]);
@@ -23,20 +35,29 @@ function PokemonGallery() {
 
     return (
         <div className="pokemon-gallery">
-          {pokemonList.length === 0 && <p>Cargando</p>}
-          {pokemonList.map((pokemon, i) => {
-            const pokemonId = pokemon.url.split("/")[6];
-            return (
-              <div key={i} className="card">
-                <div className="card-image">
-                  <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`} alt={pokemon.name} />
-                </div>
-                <div>{pokemon.name}</div>
-              </div>
-            );
-          })}
+            {pokemonList.length === 0 && <p>Cargando</p>}
+            {pokemonList.map((pokemon, i) => {
+                /* console.log(pokemonList); */
+                return (
+                    <div key={pokemon.id} className="card">
+                        <div className="card-image">
+                            <img src={pokemon.imageUrl} alt={pokemon.name} />
+                        </div>
+                        <div>{pokemon.name}</div>
+                        <div>Weight: {pokemon.weight}</div>
+                        {<div className="pokemon-abilities">
+                            <h4>Abilities:</h4>
+                            <ul>
+                                {pokemon.abilities.map((ability, index) => (
+                                    <li key={index}>{ability}</li>
+                                ))}
+                            </ul>
+                        </div>}
+                    </div>
+                );
+            })}
         </div>
-      );
-}
+    );
+};
 
 export default PokemonGallery;

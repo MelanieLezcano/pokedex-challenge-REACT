@@ -9,10 +9,11 @@ function PokemonGallery() {
     const [searchName, setSearchName] = useState("");
     const [searchAbilities, setSearchAbilities] = useState([]);
     const [selectPokemon, setSelectPokemon] = useState([]);
+    const [page, setPage] = useState(1);
 
     useEffect(() => {
         console.log('%cSe montó el componente', 'color: blue');
-        fetch('https://pokeapi.co/api/v2/pokemon?limit=200')
+        fetch(`https://pokeapi.co/api/v2/pokemon?limit=20&offset=${(page - 1) * 20}`)
             .then(response => response.json())
             .then(data => {
                 const pokemonRequests = data.results.map(pokemon => fetch(pokemon.url).then(response => response.json()));
@@ -30,7 +31,7 @@ function PokemonGallery() {
                     .catch(error => console.error(error));
             })
             .catch(error => console.error(error));
-    }, [dispatch]);
+    }, [dispatch, page]);
 
     useEffect(() => {
         console.log('%cSe actualizó el componente', 'color: blue');
@@ -88,6 +89,10 @@ const abilityOptions = pokemonList.reduce((abilities, pokemon) => {
     setSelectPokemon([]);
   };
 
+  const loadMore = () => {
+    setPage(page + 1);
+  };
+
     return (
         <div className="pokemon-gallery">
       <div className="filters">
@@ -131,6 +136,7 @@ const abilityOptions = pokemonList.reduce((abilities, pokemon) => {
                     </div>
                 );
             })}
+                  <button onClick={loadMore}>Siguiente página</button>
         </div>
     );
 };

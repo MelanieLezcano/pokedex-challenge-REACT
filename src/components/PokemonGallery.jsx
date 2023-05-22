@@ -8,10 +8,11 @@ function PokemonGallery() {
     const pokemonList = useSelector(state => state.pokemonList)
     const [searchName, setSearchName] = useState("");
     const [searchAbilities, setSearchAbilities] = useState([]);
+    const [selectPokemon, setSelectPokemon] = useState([]);
 
     useEffect(() => {
         console.log('%cSe montó el componente', 'color: blue');
-        fetch('https://pokeapi.co/api/v2/pokemon?limit=20')
+        fetch('https://pokeapi.co/api/v2/pokemon?limit=200')
             .then(response => response.json())
             .then(data => {
                 const pokemonRequests = data.results.map(pokemon => fetch(pokemon.url).then(response => response.json()));
@@ -70,6 +71,23 @@ const abilityOptions = pokemonList.reduce((abilities, pokemon) => {
     return abilities;
   }, []);
 
+
+  const selectPokemonToRemove = (event) => {
+    const selectPokemonIds = Array.from(
+      event.target.selectedOptions,
+      (option) => option.value
+    );
+    setSelectPokemon(selectPokemonIds);
+  };
+
+  const PokemonRemove = () => {
+    const updatedPokemonList = pokemonList.filter(
+      (pokemon) => !selectPokemon.includes(pokemon.id.toString())
+    );
+    dispatch({ type: "SET_POKEMON_LIST", payload: updatedPokemonList });
+    setSelectPokemon([]);
+  };
+
     return (
         <div className="pokemon-gallery">
       <div className="filters">
@@ -79,6 +97,18 @@ const abilityOptions = pokemonList.reduce((abilities, pokemon) => {
             <option key={index} value={ability}>{ability}</option>
           ))}
         </select>
+        <select
+          multiple
+          value={selectPokemon}
+          onChange={selectPokemonToRemove}
+        >
+          {filterPokemonList.map((pokemon) => (
+            <option key={pokemon.id} value={pokemon.id}>
+              {pokemon.name}
+            </option>
+          ))}
+        </select>
+        <button onClick={PokemonRemove}>Eliminar Pokémon</button>
             </div>
             {filterPokemonList.length === 0 && <p>Cargando</p>}
             {filterPokemonList.map((pokemon) => {

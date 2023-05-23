@@ -1,0 +1,77 @@
+/* --colorYellow: #f3cf49;
+--colorYellowlight: #f3e7af;
+--colorGreen: #a1e365;
+--colorGreenBlue: #6fcbaf;
+--colorRed: #f36749;
+} */
+
+
+.card{
+    background-color: rgba(255, 255, 255, 0.781);
+    border-radius: 20px;
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+}
+
+.card .cardImagePosition{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    padding-bottom: 20px;
+
+}
+
+.card .imagePokemon{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    
+    height: 100px;
+    width: 100px;
+    overflow: hidden;
+    
+    background-image: url('/public/paisaje.webp');;
+    background-repeat: no-repeat;
+    background-size: 150% auto;
+    border-radius: 50%;
+    border: 3px solid #a1e365;
+    
+}
+
+.card .imagePokemon img{
+    height: auto;
+    width: auto;
+}
+
+.card .name{
+    font-size: 25px;
+    text-align: center;
+    margin-bottom: 15px;
+    color: white;
+    background-color: #a1e365;
+    padding-bottom: 5px;
+}
+
+.card .weight{
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 15px;
+    background-color: #6e8e50;
+    color: white;
+}
+
+.card .pokemonAbilities{
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin-top: 5px;
+    padding-left: 15px;
+    background-color: #f36749;
+    color: white;
+}
+
+.card .pokemonAbilities li{
+    list-style: none;
+    padding-left: 20px;
+}

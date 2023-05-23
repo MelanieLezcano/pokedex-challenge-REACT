@@ -115,7 +115,9 @@ function PokemonGallery() {
                 <Card key={pokemon.id} pokemon={pokemon} />
             ))}
             </div>
+            <div className="pagina">
             <button onClick={loadMore}>Siguiente página</button>
+            </div>
         </div>
     );
 }

@@ -6,7 +6,9 @@ function Card({ pokemon }) {
     <div className="card">
       <div className="cardImagePosition">
         <div className="imagePokemon">
+          <div className="pokemon">
         <img src={pokemon.imageUrl} alt={pokemon.name} />
+        </div>
         </div>
       </div>
       <div className="name">{pokemon.name}</div>

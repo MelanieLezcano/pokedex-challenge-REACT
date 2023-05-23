@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Header from "./Header";
+import Card from "./Card";
 import "../styling/PokemonGallery.css";
 
 function PokemonGallery() {
@@ -43,102 +45,80 @@ function PokemonGallery() {
 
     const selectAbilities = event => {
         const selectedAbilities = Array.from(event.target.selectedOptions, option => option.value);
-    setSearchAbilities(selectedAbilities);
-};
+        setSearchAbilities(selectedAbilities);
+    };
 
-const filterPokemonList = pokemonList.filter(pokemon => {
-    let nameMatches = searchName === "" || pokemon.name.toLowerCase().includes(searchName.toLowerCase());
-    let abilitiesMatches = searchAbilities.length === 0 ||  searchAbilities.some(ability => pokemon.abilities.includes(ability));
-    
-    // Buscar solo por nombre
-    if (searchName !== "" && searchAbilities.length === 0) {
-        return nameMatches;
-    }
-    
-    // Buscar solo por habilidades
-    if (searchName === "" && searchAbilities.length > 0) {
-        return abilitiesMatches;
-    }
-    
-    // Buscar por nombre y habilidades
-    return nameMatches && abilitiesMatches;
-});
-const abilityOptions = pokemonList.reduce((abilities, pokemon) => {
-    pokemon.abilities.forEach(ability => {
-      if (!abilities.includes(ability)) {
-        abilities.push(ability);
-      }
+    const filterPokemonList = pokemonList.filter(pokemon => {
+        let nameMatches = searchName === "" || pokemon.name.toLowerCase().includes(searchName.toLowerCase());
+        let abilitiesMatches = searchAbilities.length === 0 || searchAbilities.some(ability => pokemon.abilities.includes(ability));
+
+        // Buscar solo por nombre
+        if (searchName !== "" && searchAbilities.length === 0) {
+            return nameMatches;
+        }
+
+        // Buscar solo por habilidades
+        if (searchName === "" && searchAbilities.length > 0) {
+            return abilitiesMatches;
+        }
+
+        // Buscar por nombre y habilidades
+        return nameMatches && abilitiesMatches;
     });
-    return abilities;
-  }, []);
 
+    const selectPokemonToRemove = (event) => {
+        const selectPokemonIds = Array.from(
+            event.target.selectedOptions,
+            (option) => option.value
+        );
+        setSelectPokemon(selectPokemonIds);
+    };
 
-  const selectPokemonToRemove = (event) => {
-    const selectPokemonIds = Array.from(
-      event.target.selectedOptions,
-      (option) => option.value
-    );
-    setSelectPokemon(selectPokemonIds);
-  };
+    const PokemonRemove = () => {
+        const updatedPokemonList = pokemonList.filter(
+            (pokemon) => !selectPokemon.includes(pokemon.id.toString())
+        );
+        dispatch({ type: "SET_POKEMON_LIST", payload: updatedPokemonList });
+        setSelectPokemon([]);
+    };
 
-  const PokemonRemove = () => {
-    const updatedPokemonList = pokemonList.filter(
-      (pokemon) => !selectPokemon.includes(pokemon.id.toString())
-    );
-    dispatch({ type: "SET_POKEMON_LIST", payload: updatedPokemonList });
-    setSelectPokemon([]);
-  };
-
-  const loadMore = () => {
-    setPage(page + 1);
-  };
+    const loadMore = () => {
+        setPage(page + 1);
+    };
 
     return (
-        <div className="pokemon-gallery">
-      <div className="filters">
-        <input type="text" placeholder="Buscar por nombre" value={searchName} onChange={selectName} />
-        <select multiple value={searchAbilities} onChange={selectAbilities}>
-          {abilityOptions.map((ability, index) => (
-            <option key={index} value={ability}>{ability}</option>
-          ))}
-        </select>
-        <select
-          multiple
-          value={selectPokemon}
-          onChange={selectPokemonToRemove}
-        >
-          {filterPokemonList.map((pokemon) => (
-            <option key={pokemon.id} value={pokemon.id}>
-              {pokemon.name}
-            </option>
-          ))}
-        </select>
-        <button onClick={PokemonRemove}>Eliminar Pokémon</button>
-            </div>
+        <div className="body">
+      <Header
+        searchName={searchName}
+        selectName={selectName}
+        searchAbilities={searchAbilities}
+        selectAbilities={selectAbilities}
+        filterPokemonList={filterPokemonList}
+      />
+      <div className="boxPokemonRemove">
+       <select className="pokemonRemove"
+        value={selectPokemonToRemove}
+        onChange={selectPokemonToRemove}
+      >
+                <option>Seleccionar pokemón</option>
+        {filterPokemonList.map((pokemon) => (
+          <option key={pokemon.id} value={pokemon.id}>
+            {pokemon.name}
+          </option>
+        ))}
+      </select>
+      <button className="buttonRemove" onClick={PokemonRemove}>Eliminar Pokémon</button>
+      </div>
+      <div className="pokemon-gallery">
             {filterPokemonList.length === 0 && <p>Cargando</p>}
-            {filterPokemonList.map((pokemon) => {
-                /* console.log(pokemonList); */
-                return (
-                    <div key={pokemon.id} className="card">
-                        <div className="card-image">
-                            <img src={pokemon.imageUrl} alt={pokemon.name} />
-                        </div>
-                        <div>{pokemon.name}</div>
-                        <div>Weight: {pokemon.weight}</div>
-                        {<div className="pokemon-abilities">
-                            <h4>Abilities:</h4>
-                            <ul>
-                                {pokemon.abilities.map((ability, index) => (
-                                    <li key={index}>{ability}</li>
-                                ))}
-                            </ul>
-                        </div>}
-                    </div>
-                );
-            })}
-                  <button onClick={loadMore}>Siguiente página</button>
+            {filterPokemonList.map((pokemon) => (
+                <Card key={pokemon.id} pokemon={pokemon} />
+            ))}
+            </div>
+            <button onClick={loadMore}>Siguiente página</button>
         </div>
     );
-};
+}
+
 
 export default PokemonGallery;

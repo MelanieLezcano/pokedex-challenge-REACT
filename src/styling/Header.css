@@ -1,0 +1,57 @@
+/* --colorYellow: #f3cf49;
+--colorYellowlight: #f3e7af;
+--colorGreen: #a1e365;
+--colorGreenBlue: #6fcbaf;
+--colorRed: #f36749;
+} */
+
+.header{
+    width: 100%;
+    position: relative;
+    margin-bottom: auto 0;
+    height: 100%;
+    background-color: #6fcbaf;
+    display: flex;
+    flex-direction: column;
+}
+
+.header h1{
+    margin: 15px;
+    color: white;
+}
+
+.header .search{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    height: 50px;
+    margin-bottom: 15px;
+    
+}
+
+.header .searchName input{
+    margin: 100px auto;
+    height: 40px;
+  }
+
+  .header .searchName{
+    width: 60vw;
+    border-radius: 20px;
+    border: none ;
+  }
+
+  .header .searchAbilities select{
+    margin: 100px auto;
+    width: 30vw;
+    height: 40px;
+  }
+
+  .header .searchAbilities{
+    width: 30vw;
+    border-radius: 20px;
+    border: none ;
+  }
+  
+  
+
